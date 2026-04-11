@@ -32,8 +32,6 @@ def ver_cursos():
             lista.append(i)
     return lista
 
-print(ver_cursos())
-
 #Atualizar Cursos (Uptade U)
 def atualizar_curso(i):
     with con:
@@ -51,3 +49,72 @@ def deletar_curso(i):
         cur.execute(query, i)
 
 #deletar_curso([1])
+
+#Tabela Turmas
+
+#Criar Turmas (Creat C)
+def criar_turma(i):
+    with con:
+        cur = con.cursor()
+        query = "INSERT INTO turmas (nome, curso_nome, data_inicio) VALUES (?, ?, ?)"
+        cur.execute(query, i)
+
+#Ver Turmas (Rear R)
+def ver_turma():
+    lista = []
+    with con:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM turmas")
+        linha = cur.fetchall()
+
+        for i in linha:
+            lista.append(i)
+    return lista
+
+#Atualizar Turma (Uptade U)
+def atualizar_turma(i):
+    with con:
+        cur = con.cursor()
+        query = "UPDATE turmas SET nome=?, curso_nome=?, data_inicio=? WHERE id=?"
+        cur.execute(query, i)
+
+#Deletar Turma (Delete D)
+def deletar_turma(i):
+    with con:
+        cur = con.cursor()
+        query = ("DELETE FROM turmas WHERE id=?")
+        cur.execute(query, i)
+
+#Tabela Aluno --------------------------------------------------------------------------
+#Criar Aluno (Create C)
+def criar_aluno(i):
+    with con:
+        cur = con.cursor()
+        query = "INSERT INTO alunos (nome, email, telefone, sexo, imagem, data_nascimento, cpf, nome_turma) VALUES (?, ?, ?, ?, ?, ?, ? ,?)"
+        cur.execute(query, i)
+
+#Ver Alunoa (Read R)
+def ver_aluno():
+    lista = []
+    with con:
+        cur = con.cursor()
+        query = "SELECT * FROM alunos"
+        linha = cur.fetchall()
+
+        for i in lista:
+            lista.append(i)
+    return lista
+
+#Atualizar Alunos (Update U)
+def atualiza_aluno(i):
+    with con:
+        cur = con.cursor()
+        query = "UPDATE alunos SET nome=?, email =?, telefone=?, sexo=?, imagem=?, data_nascimento=?, cpf=?, turma_nome=? WHERE id=?"
+        cur.execute(query, i)
+
+#Remover Aluno (Delete D)
+def deletar_aluno(i):
+    with con:
+        cur = con.cursor()
+        query = "DELETE FROM alunos WHERE id=?"
+        cur.execute(query, i)

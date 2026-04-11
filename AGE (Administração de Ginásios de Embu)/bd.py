@@ -32,9 +32,9 @@ try:
         cur.execute("""CREATE TABLE IF NOT EXISTS turmas (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT UNIQUE,
-            nome_curso TEXT,
+            curso_nome TEXT,
             data_inicio DATE,
-            FOREIGN KEY (nome_curso) REFERENCES cursos (nome) ON UPDATE CASCADE ON DELETE CASCADE
+            FOREIGN KEY (curso_nome) REFERENCES cursos (nome) ON UPDATE CASCADE ON DELETE CASCADE
         )""")
 
         print("Tabela de Turmas criada com sucesso")
