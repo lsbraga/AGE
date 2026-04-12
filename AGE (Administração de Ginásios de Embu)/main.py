@@ -19,6 +19,30 @@ from datetime import date
 #importando vie-
 from view import *
 
+#Fazer cópia fotos
+import os
+import shutil
+
+#exportação
+import pandas as pd
+from fpdf import FPDF
+
+# 1. Pega o caminho de onde o seu script main.py está salvo
+diretorio_atual = os.path.dirname(__file__)
+
+# 2. Define o nome e o caminho da pasta de fotos (dentro do seu projeto)
+pasta_fotos = os.path.join(diretorio_atual, "fotos_alunos")
+
+# 3. Verifica se a pasta já existe. Se não existir, o Python cria ela agora!
+if not os.path.exists(pasta_fotos):
+    os.makedirs(pasta_fotos)
+    print(f"Pasta criada em: {pasta_fotos}")
+else:
+    print("A pasta fotos_alunos já existe e está pronta.")
+
+imagem_string = "" 
+l_imagem = None # Será inicializada abaixo
+
 diretorio_atual = os.path.dirname(__file__)
 caminho_imagem = os.path.join(diretorio_atual, "logo.png")
 caminho_add = os.path.join(diretorio_atual, "adicionar.png")
@@ -73,6 +97,263 @@ app_logo.place(x=0, y=0)
 
 #Função aluno para cadastro aluno
 def alunos():
+
+    #Função novo aluno
+    def novo_aluno():
+        global imagem, imagem_string, l_imagem
+
+        nome = e_nome.get()
+        email = e_email.get()
+        telefone = e_tel.get()
+        sexo = c_sexo.get()
+        data = data_nascimento.get()
+        cpf = e_cpf.get()
+        curso = c_turma.get()
+        imagem_para_db = ""
+
+        #Salvar imagem
+        if imagem_string:
+            try:
+                # 1. Descobrir a extensão do arquivo (ex: .jpg ou .png)
+                extensao = os.path.splitext(imagem_string)[1]
+                
+                # 2. Criar o novo nome baseado no CPF: "123456789.jpg"
+                nome_foto_final = f"{cpf}{extensao}"
+                
+                # 3. Definir o caminho completo de destino
+                caminho_destino = os.path.join(pasta_fotos, nome_foto_final)
+                
+                # 4. Faz a cópia real do arquivo para a pasta do projeto
+                shutil.copy(imagem_string, caminho_destino)
+                
+                # 5. O que vai para o Banco de Dados é o NOVO caminho (a cópia)
+                imagem_para_db = caminho_destino
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao copiar foto: {e}")
+                return
+        else:
+            messagebox.showerror("Erro", "Selecione uma foto primeiro")
+            return
+        
+        lista = [nome, email, telefone, sexo, imagem_para_db, data, cpf, curso]
+
+        #Vereficando caso algum campo esteja vazio ou não
+        for i in lista:
+            if i =="":
+                messagebox.showerror("Erro", "Preencha todos os campos")
+                return
+        
+         #Inserindo os dados no db
+        try:
+            criar_aluno(lista)
+
+            #mensagem de sucesso
+            messagebox.showinfo("Sucesso", "Os dados foram inseridos com sucesso")
+
+            #limpando os campos
+            e_nome.delete(0, END)
+            e_email.delete(0, END)
+            e_tel.delete(0, END)
+            c_sexo.set("")
+            data_nascimento.delete(0, END)
+            e_cpf.delete(0, END)
+            c_turma.set("")
+
+            #Mostrar os dados na tabela alunos  
+            mostrar_alunos()
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao salvar no Banco de Dados: {e}")  
+
+    #Função atualizar alunos
+    def update_aluno():
+        global imagem, imagem_string, l_imagem
+        
+        try:
+            tree_itens = tree_aluno.focus()
+            tree_dicionario = tree_aluno.item(tree_itens)
+            tree_lista = tree_dicionario['values']
+
+            valor_id = tree_lista[0]
+
+            #Limpando os campos de entrada
+            e_nome.delete(0, END)
+            e_email.delete(0, END)
+            e_tel.delete(0, END)
+            c_sexo.delete(0, END)
+            data_nascimento.delete(0, END)
+            e_cpf.delete(0, END)
+            c_turma.delete(0, END)
+
+            #Inserindo os valores no campos de entrada
+            e_nome.insert(0, tree_lista[1])
+            e_email.insert(0, tree_lista[2])
+            e_tel.insert(0, tree_lista[3])
+            c_sexo.insert(0, tree_lista[4])
+            data_nascimento.insert(0, tree_lista[6])
+            e_cpf.insert(0, tree_lista[7])
+            c_turma.insert(0, tree_lista[8])
+
+            imagem = tree_lista[5]
+            imagem_string = imagem
+
+            #abrir imagem
+            imagem = Image.open(imagem)
+            imagem = imagem.resize((130, 130))
+            imagem = ImageTk.PhotoImage(imagem)
+            l_imagem = Label(frame_detalhes, image=imagem, bg=co1, fg=co4)
+            l_imagem.place(x=300, y=10)
+
+            def update():
+                        global imagem, imagem_string, l_imagem
+
+                        nome = e_nome.get()
+                        email = e_email.get()
+                        telefone = e_tel.get()
+                        sexo = c_sexo.get()
+                        data = data_nascimento.get()
+                        cpf = e_cpf.get()
+                        curso = c_turma.get()
+                        imagem = imagem_string
+
+                        lista = [nome, email, telefone, sexo, imagem, data, cpf, curso, valor_id]
+
+                        #Vereficando caso algum campo esteja vazio ou não
+                        for i in lista:
+                            if i =="":
+                                messagebox.showerror("Erro", "Preencha todos os campos")
+                                return
+                        
+                        #Atualizadno os dados no db
+                        atualiza_aluno(lista)
+
+                        #mensagem de sucesso
+                        messagebox.showinfo("Sucesso", "Os dados foram atualizados com sucesso")
+
+                        #limpando os campos
+                        e_nome.delete(0, END)
+                        e_email.delete(0, END)
+                        e_tel.delete(0, END)
+                        c_sexo.delete(0, END)
+                        data_nascimento.delete(0, END)
+                        e_cpf.delete(0, END)
+                        c_turma.delete(0, END)
+
+                        #Mostrar os dados na tabela alunos
+                        mostrar_alunos()
+
+                        #destruindo botão após salvar
+                        botao_update.destroy()
+                    
+            botao_update = Button(frame_detalhes,command=update, anchor=CENTER, text="Salvar atualização".upper(), width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co3, fg=co1)
+            botao_update.place(x=727, y=130)
+        
+        except IndexError:
+            messagebox.showerror("Erro", "Selecione um dos alunos na tabela")
+
+    #Função deletar aluno
+    def delete_alunos():
+        try:
+            tree_itens = tree_aluno.focus()
+            tree_dicionario = tree_aluno.item(tree_itens)
+            tree_lista = tree_dicionario['values']
+
+            valor_id = tree_lista[0]
+
+            #deletar os dados do db
+            deletar_aluno([valor_id])
+
+            #Mensagem de sucesso
+            messagebox.showinfo("Sucesso", "Dados do aluno foi apagado")
+
+            #mostrando os dados na tabela
+            mostrar_alunos()
+
+        except IndexError:
+            messagebox.showerror ("Erro", "Selecione um aluno na tabela")
+
+    def procurar_aluno_nome():
+        nome_procurar = e_nome_procurar.get()
+        
+        # Obtém todos os alunos e filtra
+        todos_alunos = ver_aluno()
+        lista_filtrada = []
+
+        for aluno in todos_alunos:
+            # Verifica se o nome digitado está contido no nome do aluno (sem diferenciar maiúsculas)
+            if nome_procurar.lower() in aluno[1].lower():
+                lista_filtrada.append(aluno)
+
+        # Limpa a Treeview atual
+        for item in tree_aluno.get_children():
+            tree_aluno.delete(item)
+
+        # Insere apenas os resultados da busca
+        for item in lista_filtrada:
+            tree_aluno.insert('', 'end', values=item)
+
+    def ver_detalhes_aluno():
+        try:
+            tree_itens = tree_aluno.focus()
+            tree_dicionario = tree_aluno.item(tree_itens)
+            tree_lista = tree_dicionario['values']
+
+            if not tree_lista:
+                messagebox.showerror("Erro", "Selecione um aluno na tabela primeiro")
+                return
+
+            # Limpando os campos antes de preencher
+            e_nome.delete(0, END)
+            e_email.delete(0, END)
+            e_tel.delete(0, END)
+            c_sexo.set("") 
+            data_nascimento.set_date(tree_lista[6]) # Assume que o formato no DB é compatível
+            e_cpf.delete(0, END)
+            c_turma.set("")
+
+            # Preenchendo com os dados da tabela
+            e_nome.insert(0, tree_lista[1])
+            e_email.insert(0, tree_lista[2])
+            e_tel.insert(0, tree_lista[3])
+            c_sexo.set(tree_lista[4])
+            e_cpf.insert(0, tree_lista[7])
+            c_turma.set(tree_lista[8])
+
+            # Carregar a imagem
+            global imagem, imagem_string, l_imagem
+            # Pegamos o nome do arquivo salvo no banco (ex: 123.jpg) e o CPF atual
+            foto_no_banco = tree_lista[5]
+            cpf_atual = tree_lista[7]
+            extensao = os.path.splitext(foto_no_banco)[1]
+            imagem_string = os.path.join(pasta_fotos, f"{cpf_atual}{extensao}")
+            
+            try:
+                if os.path.exists(imagem_string):
+                    caminho_final = imagem_string
+                else:
+                    caminho_final= foto_no_banco
+                
+                img_bruta = Image.open(caminho_final)
+                img_bruta = img_bruta.resize((130, 130))
+                imagem = ImageTk.PhotoImage(img_bruta)
+
+                try:
+                    l_imagem.configure(image=imagem)
+                    l_imagem.image = imagem
+                    l_imagem.place(x=300, y=10)
+                except:
+                    l_imagem = Label(frame_detalhes, image=imagem, bg=co1, fg=co4)
+                    l_imagem.image = imagem
+                    l_imagem.place(x=300, y=10) 
+            except:
+                try:
+                    l_imagem.configure(image='')
+                except:
+                    pass
+                messagebox.showwarning("Aviso", "A foto deste aluno não foi encontrada no computador.")
+
+        except IndexError:
+            messagebox.showerror("Erro", "Selecione um aluno na tabela")
+    
     #criar campos de entrada
     l_nome = Label(frame_detalhes, text="Nome *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
     l_nome.place(x=4, y=10)
@@ -109,11 +390,11 @@ def alunos():
     e_cpf.place(x=450, y=100)
 
     #Turma
-    turmas = ["Turma 1", "Turma 2"]
+    turmas = ver_turma()
     turma = []
 
     for i in turmas:
-        turma.append(i)
+        turma.append(i[1])
     
     l_turma = Label(frame_detalhes, text="Turma *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
     l_turma.place(x=446, y=130)
@@ -127,18 +408,22 @@ def alunos():
     def escolher_imagem():
         global imagem, imagem_string, l_imagem
 
-        imagem = fd.askopenfilename() 
-        if not imagem:
+        caminho = fd.askopenfilename() 
+        if not caminho:
             return
-        imagem_string = imagem
-        #abrindo a imagem
-        imagem = Image.open(imagem)
-        imagem = imagem.resize((130, 130))
-        imagem = ImageTk.PhotoImage(imagem)
-        l_imagem = Label(frame_detalhes, image=imagem, bg=co4, fg=co1)
-        l_imagem.place(x=300, y=10)
 
-        botao_carregar['text'] = "Trocar de Foto".upper()
+        imagem_string = caminho
+        #abrindo a imagem
+        try: 
+            imagem = Image.open(caminho)
+            imagem = imagem.resize((130, 130))
+            imagem = ImageTk.PhotoImage(imagem)
+            l_imagem = Label(frame_detalhes, image=imagem, bg=co4, fg=co1)
+            l_imagem.place(x=300, y=10)
+
+            botao_carregar['text'] = "Trocar de Foto".upper()
+        except Exception as e:
+            messagebox.showerror("Erro", f"Não foi possível carregar a imagem: {e}")
     botao_carregar = Button(frame_detalhes, command=escolher_imagem, text="Carregar Foto".upper(), width=20, compound=CENTER, anchor=CENTER, overrelief=RIDGE, font=("Ivy 7"), bg=co1, fg=co0)
     botao_carregar.place(x=300, y=160)
 
@@ -155,21 +440,21 @@ def alunos():
     e_nome_procurar = Entry(frame_detalhes, width=17, justify="center", relief="solid", font=("Ivy 10"))
     e_nome_procurar.place(x=630, y=35)
 
-    botao_procurar = Button(frame_detalhes, anchor=CENTER, text="Procurar", width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co1, fg=co0)
+    botao_procurar = Button(frame_detalhes,command=procurar_aluno_nome, anchor=CENTER, text="Procurar", width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co1, fg=co0)
     botao_procurar.place(x=757, y=35)
 
     #botoes
 
-    botao_salvar = Button(frame_detalhes, anchor=CENTER, text="Salvar".upper(), width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co3, fg=co1)
+    botao_salvar = Button(frame_detalhes,command=novo_aluno, anchor=CENTER, text="Salvar".upper(), width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co3, fg=co1)
     botao_salvar.place(x=627, y=110)
 
-    botao_atualizar = Button(frame_detalhes, anchor=CENTER, text="Atualizar".upper(), width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co6, fg=co1)
+    botao_atualizar = Button(frame_detalhes,command=update_aluno, anchor=CENTER, text="Atualizar".upper(), width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co6, fg=co1)
     botao_atualizar.place(x=627, y=135)
 
-    botao_deletar = Button(frame_detalhes, anchor=CENTER, text="Deletar".upper(), width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co7, fg=co1)
+    botao_deletar = Button(frame_detalhes,command=delete_alunos, anchor=CENTER, text="Deletar".upper(), width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co7, fg=co1)
     botao_deletar.place(x=627, y=160)
 
-    botao_ver = Button(frame_detalhes, anchor=CENTER, text="Ver".upper(), width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co1, fg=co0)
+    botao_ver = Button(frame_detalhes,command=ver_detalhes_aluno, anchor=CENTER, text="Ver".upper(), width=9, overrelief=RIDGE, font=("Ivy 7 bold"), bg=co1, fg=co0)
     botao_ver.place(x=727, y=110)
 
     #Tabela Alunos
@@ -178,11 +463,11 @@ def alunos():
         app_nome.grid(row=0, column=0, padx=0, pady=10, sticky=NSEW)
 
     #creating a treeview with dual scrollbars
-    list_header = ['id','Nome','email',  'Telefone','sexo', 'imagem', 'Data', 'CPF','Curso']
+    list_header = ['id', 'nome', 'email', 'telefone', 'sexo', 'imagem', 'data', 'cpf', 'curso']
 
-    df_list = []
+    df_list = ver_aluno()
 
-    global tree_curso
+    global tree_aluno
 
     tree_aluno = ttk.Treeview(frame_tabela, selectmode="extended",columns=list_header, show="headings")
 
@@ -554,7 +839,74 @@ def adicionar():
     mostrar_turmas()
 #Função para salvar
 def salvar():
-    print("Salvar")
+    # Criar campos na tela de exportação
+    l_tabela = Label(frame_detalhes, text="Escolha a tabela para exportar", font=("Ivy 10"), bg=co1, fg=co4)
+    l_tabela.place(x=10, y=10)
+    
+    c_tabela = ttk.Combobox(frame_detalhes, width=20, font=("Ivy 10"))
+    c_tabela['values'] = ("Alunos", "Cursos", "Turmas")
+    c_tabela.place(x=10, y=40)
+
+    # Função interna para processar a exportação
+    def exportar(formato):
+        tabela_selecionada = c_tabela.get()
+        if not tabela_selecionada:
+            messagebox.showerror("Erro", "Selecione uma tabela primeiro")
+            return
+
+        # Busca os dados corretos baseado na escolha
+        if tabela_selecionada == "Alunos":
+            dados = ver_aluno()
+            colunas = ['ID', 'Nome', 'Email', 'Telefone', 'Sexo', 'Imagem', 'Data', 'CPF', 'Curso']
+        elif tabela_selecionada == "Cursos":
+            dados = ver_cursos()
+            colunas = ['ID', 'Curso', 'Duração', 'Preço']
+        else: # Turmas
+            dados = ver_turma()
+            colunas = ['Nome', 'Curso', 'Data', 'ID']
+
+        if formato == "excel":
+            exportar_para_excel(dados, colunas, tabela_selecionada)
+        elif formato == "pdf":
+            exportar_para_pdf(dados, colunas, tabela_selecionada)
+
+    # Botões de exportação
+    btn_excel = Button(frame_detalhes, command=lambda: exportar("excel"), text="Exportar Excel", width=15, bg="#228b22", fg=co1, font=("Ivy 8 bold"))
+    btn_excel.place(x=10, y=80)
+
+    btn_pdf = Button(frame_detalhes, command=lambda: exportar("pdf"), text="Exportar PDF", width=15, bg="#b22222", fg=co1, font=("Ivy 8 bold"))
+    btn_pdf.place(x=140, y=80)
+
+# --- FUNÇÕES DE APOIO (Coloque fora da função salvar) ---
+def exportar_para_excel(dados, colunas, nome_arquivo):
+    df = pd.DataFrame(dados, columns=colunas)
+    filename = f"Relatorio_{nome_arquivo}.xlsx"
+    df.to_excel(filename, index=False)
+    messagebox.showinfo("Sucesso", f"Arquivo {filename} gerado com sucesso!")
+
+def exportar_para_pdf(dados, colunas, nome_arquivo):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=10)
+    
+    # Título
+    pdf.cell(200, 10, txt=f"Relatório de {nome_arquivo}", ln=True, align='C')
+    pdf.ln(10)
+    
+    # Cabeçalho
+    for col in colunas:
+        pdf.cell(40, 10, str(col), 1)
+    pdf.ln()
+
+    # Dados
+    for linha in dados:
+        for item in linha:
+            pdf.cell(40, 10, str(item), 1)
+        pdf.ln()
+    
+    filename = f"Relatorio_{nome_arquivo}.pdf"
+    pdf.output(filename)
+    messagebox.showinfo("Sucesso", f"Arquivo {filename} gerado com sucesso!")
 
 
 #Função de control

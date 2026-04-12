@@ -37,7 +37,7 @@ def atualizar_curso(i):
     with con:
         cur = con.cursor()
         query = "UPDATE Cursos SET nome=?, duracao=?, preco=? WHERE id=?"
-        cur.execute(query,i)
+        cur.execute(query, i)
 
 #atualizar_curso(l)
 
@@ -56,7 +56,7 @@ def deletar_curso(i):
 def criar_turma(i):
     with con:
         cur = con.cursor()
-        query = "INSERT INTO turmas (nome, curso_nome, data_inicio) VALUES (?, ?, ?)"
+        query = "INSERT INTO turmas (nome, nome_curso, data_inicio) VALUES (?, ?, ?)"
         cur.execute(query, i)
 
 #Ver Turmas (Rear R)
@@ -75,14 +75,14 @@ def ver_turma():
 def atualizar_turma(i):
     with con:
         cur = con.cursor()
-        query = "UPDATE turmas SET nome=?, curso_nome=?, data_inicio=? WHERE id=?"
+        query = "UPDATE turmas SET nome=?, nome_curso=?, data_inicio=? WHERE id=?"
         cur.execute(query, i)
 
 #Deletar Turma (Delete D)
 def deletar_turma(i):
     with con:
         cur = con.cursor()
-        query = ("DELETE FROM turmas WHERE id=?")
+        query = "DELETE FROM turmas WHERE id=?"
         cur.execute(query, i)
 
 #Tabela Aluno --------------------------------------------------------------------------
@@ -99,9 +99,10 @@ def ver_aluno():
     with con:
         cur = con.cursor()
         query = "SELECT * FROM alunos"
+        cur.execute(query)
         linha = cur.fetchall()
 
-        for i in lista:
+        for i in linha:
             lista.append(i)
     return lista
 
@@ -109,7 +110,7 @@ def ver_aluno():
 def atualiza_aluno(i):
     with con:
         cur = con.cursor()
-        query = "UPDATE alunos SET nome=?, email =?, telefone=?, sexo=?, imagem=?, data_nascimento=?, cpf=?, turma_nome=? WHERE id=?"
+        query = "UPDATE alunos SET nome=?, email=?, telefone=?, sexo=?, imagem=?, data_nascimento=?, cpf=?, nome_turma=? WHERE id=?"
         cur.execute(query, i)
 
 #Remover Aluno (Delete D)
