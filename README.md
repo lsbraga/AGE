@@ -1,6 +1,6 @@
-# ---
+#
 # AGE - Administração de Ginásios de Embu
-# ---
+#
 
 **Versão Atual:** `0.3.0 (Beta)`  
 **Desenvolvedor:** Leonardo Braga Silva
