@@ -15,7 +15,7 @@ except sqlite3.Error as e:
 def criar_curso(i):
     with con:
         cur = con.cursor()
-        query = "INSERT INTO Cursos (nome, duracao, preco) VALUES (?, ?, ?)"
+        query = "INSERT INTO Cursos (nome, professor, horario) VALUES (?, ?, ?)"
         cur.execute(query, i)
         
 #criar_curso(["Python", "2 Semanas", 50])
@@ -36,7 +36,7 @@ def ver_cursos():
 def atualizar_curso(i):
     with con:
         cur = con.cursor()
-        query = "UPDATE Cursos SET nome=?, duracao=?, preco=? WHERE id=?"
+        query = "UPDATE Cursos SET nome=?, professor=?, horario=? WHERE id=?"
         cur.execute(query, i)
 
 #atualizar_curso(l)
@@ -90,7 +90,7 @@ def deletar_turma(i):
 def criar_aluno(i):
     with con:
         cur = con.cursor()
-        query = "INSERT INTO alunos (nome, email, telefone, sexo, imagem, data_nascimento, cpf, nome_turma) VALUES (?, ?, ?, ?, ?, ?, ? ,?)"
+        query = "INSERT INTO alunos (nome, endereco, telefone, sexo, imagem, data_nascimento, cpf, nome_turma) VALUES (?, ?, ?, ?, ?, ?, ? ,?)"
         cur.execute(query, i)
 
 #Ver Alunoa (Read R)
@@ -110,7 +110,7 @@ def ver_aluno():
 def atualiza_aluno(i):
     with con:
         cur = con.cursor()
-        query = "UPDATE alunos SET nome=?, email=?, telefone=?, sexo=?, imagem=?, data_nascimento=?, cpf=?, nome_turma=? WHERE id=?"
+        query = "UPDATE alunos SET nome=?, endereco=?, telefone=?, sexo=?, imagem=?, data_nascimento=?, cpf=?, nome_turma=? WHERE id=?"
         cur.execute(query, i)
 
 #Remover Aluno (Delete D)

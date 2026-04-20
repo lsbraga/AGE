@@ -16,8 +16,8 @@ try:
         cur.execute(""" CREATE TABLE IF NOT EXISTS cursos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT UNIQUE,
-            duracao TEXT,
-            preco REAL        
+            professor TEXT,
+            horario        
         )""")
 
         print("Tabela Cursos criada com sucesso")
@@ -49,7 +49,7 @@ try:
         cur.execute("""CREATE TABLE IF NOT EXISTS alunos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT UNIQUE,
-            email TEXT,
+            endereco TEXT,
             telefone TEXT,
             sexo TEXT,
             imagem TEXT,

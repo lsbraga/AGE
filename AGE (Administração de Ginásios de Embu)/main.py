@@ -1,6 +1,7 @@
 #Bibliotecas
 
 #Tinker
+import tkinter as Tk
 from tkinter.ttk import *
 from tkinter import*
 from tkinter import ttk
@@ -60,39 +61,40 @@ co7 = "#ef5350" #Vermelho
 co6 = "#038cfc" #Azul
 co8 = "#263238" #Verde Escuro
 co9 = "#e9edf5" #Verde +Escuro
+co11 = "#9ffcd1"
 
 #Janela 
 janela = Tk()
 janela.title("AGE - Administração de Ginásios de Embu -  Beta")
-janela.state("zoomed")
-janela.configure(background=co1)
-janela.resizable(width=FALSE, height=FALSE)
+janela.geometry("1920x1080")
+janela.configure(background=co11)
+janela.resizable(width=TRUE, height=TRUE)
 
 sytle = Style(janela)
 sytle.theme_use("clam")
 
 #Criando Frames (Separação da tela)
-frame_logo = Frame(janela, width=850, height=52, bg=co6)
+frame_logo = Frame(janela, width=1920, height=80, bg=co3)
 frame_logo.grid(row=0, column=0, pady=0, padx=0, sticky=NSEW)
 
 ttk.Separator(janela, orient=HORIZONTAL).grid(row=1, columnspan=1, ipadx=680)
 
-frame_dados = Frame(janela, width=850, height=65, bg=co1)
+frame_dados = Frame(janela, width=1920, height=85, bg=co11)
 frame_dados.grid(row=2, column=0, pady=0, padx=0, sticky=NSEW)
 
 ttk.Separator(janela, orient=HORIZONTAL).grid(row=3, columnspan=1, ipadx=680)
 
-frame_detalhes = Frame(janela, width=850, height=200, bg=co1)
+frame_detalhes = Frame(janela, width=1920, height=200, bg=co11)
 frame_detalhes.grid(row=4, column=0, pady=0, padx=10, sticky=NSEW)
 
-frame_tabela = Frame(janela, width=850, height=200, bg=co1)
+frame_tabela = Frame(janela, width=1920, height=200, bg=co11)
 frame_tabela.grid(row=5, column=0, pady=0, padx=10, sticky=NSEW)
 
 #Fazendo a frame logo
 app_lg = Image.open(caminho_imagem)
-app_lg = app_lg.resize((50, 50))
+app_lg = app_lg.resize((95, 95))
 app_lg = ImageTk.PhotoImage(app_lg)
-app_logo = Label(frame_logo, image=app_lg, text="Cadastro de Alunos", width=850, compound=LEFT, relief=RAISED, anchor=NW, font=("Ivy 15 bold"), bg=co6, fg=co1)
+app_logo = Label(frame_logo, image=app_lg, text="Cadastro de Alunos", width=1920, compound=LEFT, relief=RAISED, anchor=NW, font=("Ivy 15 bold"), bg=co3, fg=co1)
 app_logo.place(x=0, y=0)
 
 #Função aluno para cadastro aluno
@@ -103,7 +105,7 @@ def alunos():
         global imagem, imagem_string, l_imagem
 
         nome = e_nome.get()
-        email = e_email.get()
+        endereco = e_endereco.get()
         telefone = e_tel.get()
         sexo = c_sexo.get()
         data = data_nascimento.get()
@@ -135,7 +137,7 @@ def alunos():
             messagebox.showerror("Erro", "Selecione uma foto primeiro")
             return
         
-        lista = [nome, email, telefone, sexo, imagem_para_db, data, cpf, curso]
+        lista = [nome, endereco, telefone, sexo, imagem_para_db, data, cpf, curso]
 
         #Vereficando caso algum campo esteja vazio ou não
         for i in lista:
@@ -152,7 +154,7 @@ def alunos():
 
             #limpando os campos
             e_nome.delete(0, END)
-            e_email.delete(0, END)
+            e_endereco.delete(0, END)
             e_tel.delete(0, END)
             c_sexo.set("")
             data_nascimento.delete(0, END)
@@ -177,7 +179,7 @@ def alunos():
 
             #Limpando os campos de entrada
             e_nome.delete(0, END)
-            e_email.delete(0, END)
+            e_endereco.delete(0, END)
             e_tel.delete(0, END)
             c_sexo.delete(0, END)
             data_nascimento.delete(0, END)
@@ -186,7 +188,7 @@ def alunos():
 
             #Inserindo os valores no campos de entrada
             e_nome.insert(0, tree_lista[1])
-            e_email.insert(0, tree_lista[2])
+            e_endereco.insert(0, tree_lista[2])
             e_tel.insert(0, tree_lista[3])
             c_sexo.insert(0, tree_lista[4])
             data_nascimento.insert(0, tree_lista[6])
@@ -207,7 +209,7 @@ def alunos():
                         global imagem, imagem_string, l_imagem
 
                         nome = e_nome.get()
-                        email = e_email.get()
+                        endereco = e_endereco.get()
                         telefone = e_tel.get()
                         sexo = c_sexo.get()
                         data = data_nascimento.get()
@@ -215,7 +217,7 @@ def alunos():
                         curso = c_turma.get()
                         imagem = imagem_string
 
-                        lista = [nome, email, telefone, sexo, imagem, data, cpf, curso, valor_id]
+                        lista = [nome, endereco, telefone, sexo, imagem, data, cpf, curso, valor_id]
 
                         #Vereficando caso algum campo esteja vazio ou não
                         for i in lista:
@@ -231,7 +233,7 @@ def alunos():
 
                         #limpando os campos
                         e_nome.delete(0, END)
-                        e_email.delete(0, END)
+                        e_endereco.delete(0, END)
                         e_tel.delete(0, END)
                         c_sexo.delete(0, END)
                         data_nascimento.delete(0, END)
@@ -303,7 +305,7 @@ def alunos():
 
             # Limpando os campos antes de preencher
             e_nome.delete(0, END)
-            e_email.delete(0, END)
+            e_endereco.delete(0, END)
             e_tel.delete(0, END)
             c_sexo.set("") 
             data_nascimento.set_date(tree_lista[6]) # Assume que o formato no DB é compatível
@@ -312,7 +314,7 @@ def alunos():
 
             # Preenchendo com os dados da tabela
             e_nome.insert(0, tree_lista[1])
-            e_email.insert(0, tree_lista[2])
+            e_endereco.insert(0, tree_lista[2])
             e_tel.insert(0, tree_lista[3])
             c_sexo.set(tree_lista[4])
             e_cpf.insert(0, tree_lista[7])
@@ -355,36 +357,36 @@ def alunos():
             messagebox.showerror("Erro", "Selecione um aluno na tabela")
     
     #criar campos de entrada
-    l_nome = Label(frame_detalhes, text="Nome *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
+    l_nome = Label(frame_detalhes, text="Nome *", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
     l_nome.place(x=4, y=10)
     e_nome = Entry(frame_detalhes, width=45, justify="left", relief="solid")
     e_nome.place(x=7, y=40)
 
-    l_email = Label(frame_detalhes, text="Email *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
-    l_email.place(x=4, y=70)
-    e_email = Entry(frame_detalhes, width=45, justify="left", relief="solid")
-    e_email.place(x=7, y=100)
+    l_endereco = Label(frame_detalhes, text="Endereço *", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
+    l_endereco.place(x=4, y=70)
+    e_endereco = Entry(frame_detalhes, width=45, justify="left", relief="solid")
+    e_endereco.place(x=7, y=100)
 
-    l_tel = Label(frame_detalhes, text="Telefone *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
+    l_tel = Label(frame_detalhes, text="Telefone *", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
     l_tel.place(x=4, y=130)
     e_tel = Entry(frame_detalhes, width=20, justify="left", relief="solid")
     e_tel.place(x=7, y=160)
 
     #Sexo
-    l_sexo = Label(frame_detalhes, text="Sexo *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
+    l_sexo = Label(frame_detalhes, text="Sexo *", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
     l_sexo.place(x=190, y=130)
     c_sexo = ttk.Combobox(frame_detalhes, width=12, font=("Ivy 8 bold"))
     c_sexo ["values"] = ("Masculino", "Feminino")
     c_sexo.place(x=190, y=160)
 
     #Data Nascimento
-    l_data_nascimento = Label(frame_detalhes, text="Data de nascimento *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
+    l_data_nascimento = Label(frame_detalhes, text="Data de nascimento *", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
     l_data_nascimento.place(x=446, y= 10)
     data_nascimento = DateEntry(frame_detalhes, width=18, background='darkblue', foreground="white", borderwidth=2, year=2026, locale="pt_BR")
     data_nascimento.place(x=450, y=40)
 
     #cpf
-    l_cpf = Label(frame_detalhes, text="CPF *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
+    l_cpf = Label(frame_detalhes, text="CPF *", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
     l_cpf.place(x=446, y=70)
     e_cpf = Entry(frame_detalhes, width=20, justify="left", relief="solid")
     e_cpf.place(x=450, y=100)
@@ -396,7 +398,7 @@ def alunos():
     for i in turmas:
         turma.append(i[1])
     
-    l_turma = Label(frame_detalhes, text="Turma *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
+    l_turma = Label(frame_detalhes, text="Turma *", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
     l_turma.place(x=446, y=130)
     c_turma = ttk.Combobox(frame_detalhes, width=20, font=("Ivy 8 bold"))
     c_turma['values'] = (turma)
@@ -435,7 +437,7 @@ def alunos():
     l_linha.place(x=608, y=10)
 
     #Procurar Aluno
-    l_nome = Label(frame_detalhes, text="Procurar Aluno", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
+    l_nome = Label(frame_detalhes, text="Procurar Aluno", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
     l_nome.place(x=627, y=10)
     e_nome_procurar = Entry(frame_detalhes, width=17, justify="center", relief="solid", font=("Ivy 10"))
     e_nome_procurar.place(x=630, y=35)
@@ -459,11 +461,11 @@ def alunos():
 
     #Tabela Alunos
     def mostrar_alunos():
-        app_nome = Label(frame_tabela, text="Tabela de Alunos", height=1,pady=0, padx=0, relief="flat", anchor=NW, font=('Ivy 10 bold'), bg=co1, fg=co4)
+        app_nome = Label(frame_tabela, text="Tabela de Alunos", height=1,pady=0, padx=0, relief="flat", anchor=NW, font=('Ivy 10 bold'), bg=co11, fg=co4)
         app_nome.grid(row=0, column=0, padx=0, pady=10, sticky=NSEW)
 
     #creating a treeview with dual scrollbars
-    list_header = ['id', 'nome', 'email', 'telefone', 'sexo', 'imagem', 'data', 'cpf', 'curso']
+    list_header = ['id', 'nome', 'endereço', 'telefone', 'sexo', 'imagem', 'data', 'cpf', 'curso']
 
     df_list = ver_aluno()
 
@@ -483,7 +485,7 @@ def alunos():
     frame_tabela.grid_rowconfigure(0, weight=12)
 
     hd=["nw","nw","nw","center","center","center","center","center","center"]
-    h=[30, 180, 150, 100, 70, 70, 80, 100, 120]
+    h=[30, 180, 200, 100, 70, 70, 80, 100, 120]
     n=0
 
     for col in list_header:
@@ -502,22 +504,22 @@ def alunos():
 def adicionar():
     global frame_tabela_curso, frame_tabela_linha, frame_tabela_turma
     #Criando frames
-    frame_tabela_curso = Frame(frame_tabela, width=300, height=200, bg=co1)
+    frame_tabela_curso = Frame(frame_tabela, width=300, height=200, bg=co11)
     frame_tabela_curso.grid(row=0, column=0, pady=0, padx=10, sticky=NSEW)
 
-    frame_tabela_linha = Frame(frame_tabela, width=30, height=200, bg=co1)
+    frame_tabela_linha = Frame(frame_tabela, width=30, height=200, bg=co11)
     frame_tabela_linha.grid(row=0, column=1, pady=0, padx=10, sticky=NSEW)
 
-    frame_tabela_turma = Frame(frame_tabela, width=300, height=200, bg=co1)
+    frame_tabela_turma = Frame(frame_tabela, width=300, height=200, bg=co11)
     frame_tabela_turma.grid(row=0, column=2, pady=0, padx=10, sticky=NSEW)
 
 #Função novo curso
     def novo_curso():
         nome = e_nome_curso.get()
-        duracao = e_duracao.get()
-        preco = e_preco.get()
+        professor = e_professor.get()
+        horario = e_horario.get()
 
-        lista = [nome, duracao, preco]
+        lista = [nome, professor, horario]
 
         # Verificando se os valores estão vazios
         for i in lista:
@@ -529,8 +531,8 @@ def adicionar():
         criar_curso(lista)
         messagebox.showinfo("Sucesso", "Dados foram cadastrados com sucesso")
         e_nome_curso.delete(0, END)
-        e_duracao.delete(0, END)
-        e_preco.delete(0, END)
+        e_professor.delete(0, END)
+        e_horario.delete(0, END)
 
         mostrar_cursos()
 
@@ -545,16 +547,16 @@ def adicionar():
 
             #Inserindo os valores nas entries
             e_nome_curso.insert(0, tree_lista[1])
-            e_duracao.insert(0, tree_lista[2])
-            e_preco.insert(0, tree_lista[3])
+            e_professor.insert(0, tree_lista[2])
+            e_horario.insert(0, tree_lista[3])
 
             #Função atualizar
             def update():
                 nome = e_nome_curso.get()
-                duracao = e_duracao.get()
-                preco = e_preco.get()
+                professor = e_professor.get()
+                horario = e_horario.get()
 
-                lista = [nome, duracao, preco, valor_id]
+                lista = [valor_id, nome, professor, horario]
 
                 # Verificando se os valores estão vazios
                 for i in lista:
@@ -567,8 +569,8 @@ def adicionar():
                 #mensagem scucesso
                 messagebox.showinfo("Sucesso", "Dados foram cadastrados com sucesso")
                 e_nome_curso.delete(0, END)
-                e_duracao.delete(0, END)
-                e_preco.delete(0, END)
+                e_professor.delete(0, END)
+                e_horario.delete(0, END)
 
                 mostrar_cursos()
 
@@ -598,20 +600,20 @@ def adicionar():
             messagebox.showerror("Erro", "Selecione um curso na tabela")
 
 
-    l_nome = Label(frame_detalhes, text="Nome do Curso", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
+    l_nome = Label(frame_detalhes, text="Nome do Curso", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
     l_nome.place(x=4, y=10)
     e_nome_curso = Entry(frame_detalhes, width=35, justify="left", relief="solid")
     e_nome_curso.place(x=7, y=40)
 
-    l_duracao = Label(frame_detalhes, text="Duração *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
-    l_duracao.place(x=4, y=70)
-    e_duracao = Entry(frame_detalhes, width=20, justify="left", relief="solid")
-    e_duracao.place(x=7, y=100)
+    l_professor = Label(frame_detalhes, text="Professor(a) *", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
+    l_professor.place(x=4, y=70)
+    e_professor = Entry(frame_detalhes, width=20, justify="left", relief="solid")
+    e_professor.place(x=7, y=100)
 
-    l_preco = Label(frame_detalhes, text="Preço *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
-    l_preco.place(x=4, y=130)
-    e_preco = Entry(frame_detalhes, width=10, justify="left", relief="solid")
-    e_preco.place(x=7, y=160)
+    l_horario = Label(frame_detalhes, text="Horário *", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
+    l_horario.place(x=4, y=130)
+    e_horario = Entry(frame_detalhes, width=10, justify="left", relief="solid")
+    e_horario.place(x=7, y=160)
 
     botao_carregar = Button(frame_detalhes, command=novo_curso, anchor=CENTER, text="Novo".upper(), width=10, overrelief=RIDGE, font="Ivy 7 bold", bg=co3, fg=co1)
     botao_carregar.place(x=107, y=160)
@@ -639,11 +641,11 @@ def adicionar():
 
 #Tabela cursos
     def mostrar_cursos():
-        app_nome = Label(frame_tabela_curso, text="Tabela de Cursos", height=1,pady=0, padx=0, relief="flat", anchor=NW, font=('Ivy 10 bold'), bg=co1, fg=co4)
+        app_nome = Label(frame_tabela_curso, text="Tabela de Cursos", height=1,pady=0, padx=0, relief="flat", anchor=NW, font=('Ivy 10 bold'), bg=co11, fg=co4)
         app_nome.grid(row=0, column=0, padx=0, pady=10, sticky=NSEW)
 
         #creating a treeview with dual scrollbars
-        list_header = ['ID','Curso','Duração','Preço']
+        list_header = ['ID','Curso','Professor','Horario']
 
         df_list = ver_cursos()
 
@@ -720,7 +722,7 @@ def adicionar():
                 curso = c_curso.get()
                 data = data_inicio.get()
 
-                lista = [nome, curso, data, valor_id]
+                lista = [valor_id, nome, curso, data]
 
                 # Verificando se os valores estão vazios
                 for i in lista:
@@ -764,12 +766,12 @@ def adicionar():
             messagebox.showerror("Erro", "Selecione um curso na tabela")
     
     #detalhes turma
-    l_nome = Label(frame_detalhes, text="Nome da Turma *", height=1, anchor=NW, font="Ivy 10", bg=co1, fg=co4)
+    l_nome = Label(frame_detalhes, text="Nome da Turma *", height=1, anchor=NW, font="Ivy 10", bg=co11, fg=co4)
     l_nome.place(x=404, y=10)
     e_nome_turma = Entry(frame_detalhes, width=35, justify="left", relief="solid")
     e_nome_turma.place(x=407, y=40)
 
-    l_turma = Label(frame_detalhes, text="Nome da Turma *", height=1, anchor=NW, font="Ivy 10", bg=co1, fg=co4)
+    l_turma = Label(frame_detalhes, text="Nome da Turma *", height=1, anchor=NW, font="Ivy 10", bg=co11, fg=co4)
     l_turma.place(x=404, y=10)
 
     #pegando curso
@@ -783,7 +785,7 @@ def adicionar():
     c_curso['values'] = (curso)
     c_curso.place(x=407, y=100)
 
-    l_data_inicio = Label(frame_detalhes, text="Data de inicio *", height=1, anchor=NW, font=("Ivy 10"), bg=co1, fg=co4)
+    l_data_inicio = Label(frame_detalhes, text="Data de inicio *", height=1, anchor=NW, font=("Ivy 10"), bg=co11, fg=co4)
     l_data_inicio.place(x=406, y= 130)
     data_inicio = DateEntry(frame_detalhes, width=10, background='darkblue', foreground="white", borderwidth=2, year=2026, locale="pt_BR")
     data_inicio.place(x=407, y=155)
@@ -799,11 +801,11 @@ def adicionar():
 
     #Tabela turma
     def mostrar_turmas():
-        app_nome = Label(frame_tabela_turma, text="Tabela de Cursos", height=1,pady=0, padx=0, relief="flat", anchor=NW, font=('Ivy 10 bold'), bg=co1, fg=co4)
+        app_nome = Label(frame_tabela_turma, text="Tabela de Cursos", height=1,pady=0, padx=0, relief="flat", anchor=NW, font=('Ivy 10 bold'), bg=co11, fg=co4)
         app_nome.grid(row=0, column=0, padx=0, pady=10, sticky=NSEW)
 
         #creating a treeview with dual scrollbars
-        list_header = ['nome', 'curso', 'data', 'valor_id']
+        list_header = ['id', 'nome', 'curso', 'data']
 
         df_list = ver_turma()
 
@@ -820,7 +822,7 @@ def adicionar():
         tree_turma.grid(column=0, row=1, sticky='nsew')
         vsb.grid(column=1, row=1, sticky='ns')
         hsb.grid(column=0, row=2, sticky='ew')
-        frame_tabela_turma.grid_rowconfigure(0, weight=12)
+        frame_tabela_turma.grid_rowconfigure(0, weight=120)
 
         hd=["nw","nw","e","e"]
         h=[30,130,150,80]
@@ -840,7 +842,7 @@ def adicionar():
 #Função para salvar
 def salvar():
     # Criar campos na tela de exportação
-    l_tabela = Label(frame_detalhes, text="Escolha a tabela para exportar", font=("Ivy 10"), bg=co1, fg=co4)
+    l_tabela = Label(frame_detalhes, text="Escolha a tabela para exportar", font=("Ivy 10"), bg=co11, fg=co4)
     l_tabela.place(x=10, y=10)
     
     c_tabela = ttk.Combobox(frame_detalhes, width=20, font=("Ivy 10"))
@@ -860,10 +862,10 @@ def salvar():
             colunas = ['ID', 'Nome', 'Email', 'Telefone', 'Sexo', 'Imagem', 'Data', 'CPF', 'Curso']
         elif tabela_selecionada == "Cursos":
             dados = ver_cursos()
-            colunas = ['ID', 'Curso', 'Duração', 'Preço']
+            colunas = ['ID', 'Curso', 'Professor', 'Horario']
         else: # Turmas
             dados = ver_turma()
-            colunas = ['Nome', 'Curso', 'Data', 'ID']
+            colunas = ["ID", 'Nome', 'Curso', 'Data']
 
         if formato == "excel":
             exportar_para_excel(dados, colunas, tabela_selecionada)
@@ -954,14 +956,14 @@ app_cadastro.place(x=10, y=30)
 app_img_adicionar = Image.open(caminho_add)
 app_img_adicionar = app_img_adicionar.resize((18, 18))
 app_img_adicionar = ImageTk.PhotoImage(app_img_adicionar)
-app_adicionar = Button(frame_dados, command=lambda:control("adicionar"), image=app_img_adicionar, text="  Adicionar", width=100, compound=LEFT, overrelief=RIDGE, font=("Ivy 11"), bg=co1, fg=co0)
+app_adicionar = Button(frame_dados, command=lambda:control("adicionar"), image=app_img_adicionar, text="  Turmas", width=100, compound=LEFT, overrelief=RIDGE, font=("Ivy 11"), bg=co1, fg=co0)
 app_adicionar.place(x=123, y=30)
 
 #Criando botão salvar
 app_img_salvar = Image.open(caminho_slv)
 app_img_salvar = app_img_salvar.resize((18, 18))
 app_img_salvar = ImageTk.PhotoImage(app_img_salvar)
-app_salvar = Button(frame_dados, command=lambda:control("salvar"), image=app_img_salvar, text="  Adicionar", width=100, compound=LEFT, overrelief=RIDGE, font=("Ivy 11"), bg=co1, fg=co0)
+app_salvar = Button(frame_dados, command=lambda:control("salvar"), image=app_img_salvar, text="  Exportar", width=100, compound=LEFT, overrelief=RIDGE, font=("Ivy 11"), bg=co1, fg=co0)
 app_salvar.place(x=236, y=30)
 
 # Botão Sair (Vermelho para destaque)
